@@ -1,0 +1,19 @@
+Puedes crear una arquitectura, de software, especialmente diagramas de arquitectura y componentes para el siguiente programa o sistema. No generes código, 
+pero puedes darme una idea de qué lenguaje puede trabajar mejor con este escenario, y que patrones arquitectónicos a implementar. Genera los diagramas en archivos markdown con mermaid
+Se quiere diseñar un sistema de reproducción de multimedia online. En este sistema el cliente corre
+una aplicación mediante la cual solicita y recibe datos (video y/o música) de un servidor de
+aplicación (lo llamaremos AppS de ahora en más) con el cual se conecta a través de Internet. El AppS
+obtiene los archivos correspondientes al pedido del usuario de dos servidores dedicados: un servidor
+de video (VS) y un servidor de audio (AS), los cuales pueden estar localizados en diferentes hosts.
+Según lo indicado por el cliente en el pedido el AppS puede a los videos codificarlos a diferentes
+formatos, modificar su calidad y/o agregar subtítulos, mientras que a los audios puede comprimirlos
+y modificar su calidad. Una vez recibidos, el cliente ve/escucha los datos multimediales en la
+aplicación. 
+La aplicación de setup puede descargarse a través de un sitio web dedicado que se conecta al AppS
+para descarga el archivo instalador correspondiente y se instalada en una computadora o dispositivo
+personal. Luego de la instalación y pasada la etapa de registración, la aplicación puede comunicarse
+con el “Media Store” residente en el AppS donde puede comprar y descargar música y video y
+almacenarlo en una librería.
+Los dispositivos móviles como tabletas o smartphones pueden actualizar su propia librería desde una
+computadora personal a través de una conexión USB, o pueden descargar media directamente del
+“Media Store” usando algún protocolo de red inalámbrico como Wi-Fi, 4G, etc.

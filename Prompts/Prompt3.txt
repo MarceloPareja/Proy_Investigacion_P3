@@ -1,0 +1,20 @@
+Puedes crear una arquitectura, de software, especialmente diagramas de arquitectura y componentes para el siguiente programa o sistema. No generes código, 
+pero puedes darme una idea de qué lenguaje puede trabajar mejor con este escenario, y que patrones arquitectónicos a implementar. Genera los diagramas en archivos markdown con mermaid
+Una empresa de video juegos está comenzando el desarrollo de una API grafica (gAPI) que será la
+base de una serie de nuevos juegos de rol de fantasía en tercera persona.
+El software gAPI busca tener una interfaz con los principales lenguajes de programación: C++, C# y
+Java. Esta interfaz abstrae al programador de los detalles del motor gráfico, traduciendo los pedidos
+de un programa a directivas del motor. Posteriormente, para efectivizar la redenerización de los
+gráficos requeridos, el motor gráfico puede comunicarse tanto con DirectX como con OpenGL, los
+cuales interactúan directamente con el sistema operativo para mostrar los gráficos por pantalla.
+La actividad principal del motor gráfico de gAPI es dibujar escenas. Una escena se compone de un
+terreno, estructuras, personajes y postefectos. Primero se dibuja el terreno, luego se agregan las
+estructuras, después los personajes y posteriormente se aplican los postefectos sobre todos los
+elementos de la escena (sombras, iluminación, etc.).
+Una particularidad del motor gráfico de gAPI es la renderización completa de los objetos que un
+personaje tiene equipados. Para esto, el motor debe ir montando los objetos portados por el
+personaje en el orden adecuado de manera tal que no haya “clipping” (que los objetos que deberían
+estar más abajo tapen en alguna parte a los que deberían estar más arriba, por ejemplo que la ropa
+tape a la mochila). En la primera versión del motor los personajes podrán portar: Ropas, Armadura,
+Guantes, Calzado, Gorro/Casco, Túnica, Capa, Equipo en el Cinto, Equipo en la Espalda, Capa. El
+motor debe ser eficiente dibujando a la vez todos los objetos que no se superpongan
