@@ -1,0 +1,14 @@
+Puedes crear una arquitectura, sin código, para este ejercicio por favor:
+"Las conferencias de profesionales son organizadas a fin de anunciar y discutir resultados en
+un campo científico dado. La actividad central de organizar una conferencia se centra en
+seleccionar los trabajos (de ahora en más llamados papers) a ser presentados.
+Generalmente, se realiza primero una invitación abierta convocando el envío de trabajos,
+luego se circulan los trabajos recibidos entre un grupo de revisores predeterminado, y en
+base a sus evaluaciones se seleccionan los mejores trabajos para incluir en el programa de la
+conferencia. El sistema de soporte para la organización, que estará disponible por la web,
+debe considerar los siguientes aspectos:  Se anuncia el “call for papers”.  Los autores contribuyen con papers basados en su trabajo de investigación. Los papers
+son recibidos por un administrador.  Se registran los papers recibidos.  En una fecha determinada, se distribuyen los papers entre el panel de revisores. Cada
+paper se envía a tres revisores.  Se recolectan los informes de los revisores sobre los papers.  En una fecha dada, se selecciona un conjunto de papers para ser incluidos en el
+programa de la conferencia. De acuerdo a lo indicado por los revisores, algunos de estos
+papers pueden requerir ciertos cambios por parte de los autores.  Se avisa a los autores de los resultados del proceso de evaluación. Una vez recibidas las
+versiones finales de los papers, se construye el programa final. "
