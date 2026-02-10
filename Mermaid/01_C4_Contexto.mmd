@@ -1,0 +1,42 @@
+---
+config:
+    xyChart:
+        width: 900
+        height: 600
+    themeVariables:
+        primaryColor: '#1f77b4'
+        primaryBorderColor: '#1f77b4'
+---
+graph TB
+    subgraph Sistema["Sistema de Gestión de Conferencias"]
+        Portal["🖥️ Portales Web<br/>(Autores, Revisores, Admin)"]
+        API["⚙️ API Backend<br/>(REST/JSON)"]
+        DB["💾 Base de Datos"]
+    end
+    
+    Autor["👨‍💼 Autor"]
+    Revisor["👨‍🔬 Revisor"]
+    Admin["👨‍💻 Administrador"]
+    
+    Email["📧 Servicio Email"]
+    Storage["☁️ Almacenamiento"]
+    
+    Autor -->|Accede| Portal
+    Revisor -->|Accede| Portal
+    Admin -->|Accede| Portal
+    
+    Portal -->|REST API| API
+    API -->|SQL| DB
+    
+    API -->|Envía notificaciones| Email
+    API -->|Guarda/lee papers| Storage
+    
+    style Sistema fill:#e1f5ff
+    style Portal fill:#81d4fa
+    style API fill:#4dd0e1
+    style DB fill:#26c6da
+    style Autor fill:#fff9c4
+    style Revisor fill:#fff9c4
+    style Admin fill:#fff9c4
+    style Email fill:#ffccbc
+    style Storage fill:#ffccbc

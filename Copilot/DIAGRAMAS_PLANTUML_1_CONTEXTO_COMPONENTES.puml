@@ -1,0 +1,485 @@
+'=== DIAGRAMA 1: CONTEXTO DEL SISTEMA (C4 Context) ===
+@startuml C4_Contexto
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Diagrama C4 - Contexto: Sistema de Gestión de Conferencias
+
+Person(autor, "Autor", "Envía papers para\nla conferencia")
+Person(revisor, "Revisor", "Evalúa papers\nasignados")
+Person(admin, "Administrador", "Gestiona el\nsistema")
+
+System(sistemaConferencia, "Sistema de Conferencias", "Gestiona el ciclo\ncompleto de \nselección de papers")
+
+System_Ext(mailSystem, "Sistema de Email", "Envía notificaciones\ny recordatorios")
+System_Ext(storageSystem, "Almacenamiento", "Guarda archivos\nde papers")
+
+Rel(autor, sistemaConferencia, "Envía papers, ve estado")
+Rel(revisor, sistemaConferencia, "Evalúa papers, envía reviews")
+Rel(admin, sistemaConferencia, "Administra todo")
+Rel(sistemaConferencia, mailSystem, "Envía notificaciones")
+Rel(sistemaConferencia, storageSystem, "Guarda/lee papers")
+
+@enduml
+
+
+'=== DIAGRAMA 2: CONTENEDORES (C4 Container) ===
+@startuml C4_Contenedores
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Diagrama C4 - Contenedores: Tecnologías Principales
+
+System_Boundary(sistemaConferencia, "Sistema de Conferencias") {
+    Container(frontend, "Portal Web", "React/Vue.js", "Interfaces de usuario\npara autores, revisores\ny administradores")
+    Container(api, "API Backend", "Django REST Framework", "Expone endpoints REST\npara la lógica de negocio")
+    Container(db, "Base de Datos", "PostgreSQL", "Almacena papers, reviews,\nusuarios, decisiones")
+    Container(cache, "Cache", "Redis", "Almacena sesiones,\ndatos frecuentes")
+    Container(queue, "Cola de Mensajes", "RabbitMQ/Celery", "Tareas asincrónicas\ncomo envío de emails")
+}
+
+System_Ext(mailSvc, "Servicio Email", "SendGrid/AWS SES", "Envío de notificaciones")
+System_Ext(storage, "Cloud Storage", "S3/MinIO", "Almacenamiento de archivos")
+
+Rel(frontend, api, "REST/JSON", "HTTPS")
+Rel(api, db, "SQL")
+Rel(api, cache, "KV commands")
+Rel(api, queue, "Publica eventos")
+Rel(queue, mailSvc, "Envía emails")
+Rel(api, storage, "Guarda/obtiene PDFs")
+
+@enduml
+
+
+'=== DIAGRAMA 3: COMPONENTES BACKEND ===
+@startuml Componentes_Backend
+title Arquitectura de Componentes - Backend
+
+package "API Layer" {
+    component AuthController [
+        **AuthController**
+        ----
+        POST /auth/login
+        POST /auth/register
+        POST /auth/refresh
+    ]
+    
+    component PaperController [
+        **PaperController**
+        ----
+        POST /papers
+        GET /papers
+        GET /papers/{id}
+        PUT /papers/{id}
+    ]
+    
+    component ReviewController [
+        **ReviewController**
+        ----
+        GET /reviews
+        POST /reviews/{id}
+        GET /reviews/{id}
+    ]
+    
+    component AdminController [
+        **AdminController**
+        ----
+        POST /admin/distribute
+        POST /admin/select
+        GET /admin/reports
+    ]
+}
+
+package "Business Logic Layer" {
+    component PaperService [
+        **PaperService**
+        ----
+        submitPaper()
+        validatePaper()
+        getPapersByAuthor()
+        updateStatus()
+    ]
+    
+    component ReviewService [
+        **ReviewService**
+        ----
+        createReview()
+        submitReview()
+        getStatistics()
+        compileReviews()
+    ]
+    
+    component SelectionService [
+        **SelectionService**
+        ----
+        selectPapers()
+        calculateScore()
+        identifyChanges()
+    ]
+    
+    component NotificationService [
+        **NotificationService**
+        ----
+        sendEmail()
+        queueNotification()
+        sendReminder()
+    ]
+}
+
+package "Data Layer" {
+    component PaperRepo [
+        **PaperRepository**
+        ----
+        findById()
+        findByAuthor()
+        save()
+    ]
+    
+    component ReviewRepo [
+        **ReviewRepository**
+        ----
+        findById()
+        findByPaper()
+        save()
+    ]
+    
+    component UserRepo [
+        **UserRepository**
+        ----
+        findById()
+        findByEmail()
+    ]
+}
+
+package "Persistence" {
+    database PostgreSQL [
+        PostgreSQL
+        Database
+    ]
+}
+
+' Relaciones
+AuthController --> AuthService: usa
+PaperController --> PaperService: usa
+ReviewController --> ReviewService: usa
+AdminController --> SelectionService: usa
+
+PaperService --> PaperRepo: consulta
+ReviewService --> ReviewRepo: consulta
+SelectionService --> PaperRepo: consulta
+SelectionService --> ReviewRepo: consulta
+NotificationService --> UserRepo: obtiene destinatarios
+
+PaperRepo --> PostgreSQL: SQL
+ReviewRepo --> PostgreSQL: SQL
+UserRepo --> PostgreSQL: SQL
+
+@enduml
+
+
+'=== DIAGRAMA 4: FLUJO DE ESTADOS DE PAPER ===
+@startuml StateMachine_Paper
+title Estados del Lifecycle de Paper
+
+[*] --> DRAFT: Autor crea
+
+DRAFT --> SUBMITTED: Autor envía
+
+SUBMITTED --> REGISTERED: Admin registra\ny valida
+
+REGISTERED --> UNDER_REVIEW: Admin distribuye\na revisores\n(3 por paper)
+
+UNDER_REVIEW --> EVALUATED: Revisores completan\nevaluaciones
+
+EVALUATED --> DECISION_MADE: Comité decide
+
+DECISION_MADE --> ACCEPTED: Decisión:\nAceptado\n(sin cambios)
+
+DECISION_MADE --> CHANGES_REQUIRED: Decisión:\nRequiere\ncambios
+
+DECISION_MADE --> REJECTED: Decisión:\nRechazado
+
+CHANGES_REQUIRED --> FINAL_REVISION: Autor revisa\ny reenvía
+
+FINAL_REVISION --> IN_PROGRAM: Versión final\naceptada
+
+ACCEPTED --> IN_PROGRAM: Listo para\nprograma
+
+IN_PROGRAM --> [*]: En presentación
+
+REJECTED --> [*]: Finalizado
+
+@enduml
+
+
+'=== DIAGRAMA 5: DIAGRAMA DE CLASES (UML) ===
+@startuml UML_Classes
+title Modelo de Clases - Entidades Principales
+
+class User {
+    - id: int
+    - email: string
+    - nombre: string
+    - rol: UserRole
+    - afiliacion: string
+    --
+    + getId(): int
+    + getRole(): UserRole
+    + hasPermission(action): boolean
+}
+
+class Paper {
+    - id: int
+    - titulo: string
+    - resumen: text
+    - autor_id: int
+    - archivo: string
+    - version: int
+    - estado: PaperStatus
+    --
+    + getId(): int
+    + getAuthor(): User
+    + getReviews(): Review[]
+    + getStatus(): PaperStatus
+    + canBeModified(): boolean
+}
+
+class Review {
+    - id: int
+    - paper_id: int
+    - revisor_id: int
+    - puntuacion: decimal
+    - comentarios: text
+    - recomendacion: RecommendationType
+    --
+    + getId(): int
+    + getReviewer(): User
+    + getRecommendation(): RecommendationType
+    + getSuggestedChanges(): string[]
+}
+
+class Decision {
+    - id: int
+    - paper_id: int
+    - decision: DecisionType
+    - comentarios: text
+    --
+    + getId(): int
+    + getDecision(): DecisionType
+    + requiresChanges(): boolean
+}
+
+enum UserRole {
+    ADMIN
+    AUTHOR
+    REVIEWER
+}
+
+enum PaperStatus {
+    DRAFT
+    SUBMITTED
+    REGISTERED
+    UNDER_REVIEW
+    EVALUATED
+    ACCEPTED
+    REJECTED
+    CHANGES_REQUIRED
+}
+
+enum RecommendationType {
+    ACCEPT
+    REJECT
+    REVIEW
+}
+
+enum DecisionType {
+    ACCEPTED
+    REJECTED
+    CHANGES_REQUIRED
+}
+
+User "1" --> "*" Paper: crea\n(Author)
+User "1" --> "*" Review: realiza\n(Reviewer)
+Paper "1" --> "*" Review: tiene
+Paper "1" --> "1" Decision: genera
+Review --> RecommendationType: usa
+Decision --> DecisionType: usa
+User --> UserRole: tiene
+
+@enduml
+
+
+'=== DIAGRAMA 6: SECUENCIA - ENVÍO DE PAPER ===
+@startuml Sequence_SubmitPaper
+title Secuencia: Autor Envía Paper
+
+actor Autor
+participant Frontend
+participant API
+participant PaperService
+participant ValidationService
+participant PaperRepository
+participant DB
+
+Autor -> Frontend: Completa formulario\ny envía paper
+
+activate Frontend
+Frontend -> API: POST /papers\n(form data)
+
+activate API
+API -> API: Valida token JWT
+
+API -> PaperService: submitPaper(author, file, metadata)
+
+activate PaperService
+PaperService -> ValidationService: validateFormat(file)
+
+activate ValidationService
+ValidationService --> PaperService: ✓ Válido
+deactivate ValidationService
+
+PaperService -> ValidationService: validateMetadata(metadata)
+
+activate ValidationService
+ValidationService --> PaperService: ✓ Válido
+deactivate ValidationService
+
+PaperService -> PaperRepository: save(paper)
+
+activate PaperRepository
+PaperRepository -> DB: INSERT INTO papers
+
+activate DB
+DB --> PaperRepository: paper_id
+deactivate DB
+
+PaperRepository --> PaperService: ✓ Guardado
+deactivate PaperRepository
+
+PaperService --> API: Paper creado (id: 123)
+deactivate PaperService
+
+API -> API: Log: Paper submitted\nGenerate event: PaperSubmitted
+
+API --> Frontend: 201 Created\n{id, status, message}
+
+activate Frontend
+deactivate Frontend
+
+Frontend -> Autor: Confirmación:\n"Paper enviado exitosamente"
+deactivate Frontend
+
+deactivate API
+
+@enduml
+
+
+'=== DIAGRAMA 7: SECUENCIA - DISTRIBUCIÓN A REVISORES ===
+@startuml Sequence_Distribution
+title Secuencia: Admin Distribuye Papers a Revisores
+
+actor Admin
+participant Backend
+participant ReviewService
+participant AssignmentEngine
+participant NotificationService
+participant EmailQueue
+
+Admin -> Backend: Haz clic en\n"Distribuir Papers"
+
+activate Backend
+Backend -> ReviewService: distributePapersToReviewers()
+
+activate ReviewService
+ReviewService -> AssignmentEngine: assignReviewers(papers, numReviewers=3)
+
+activate AssignmentEngine
+loop Para cada paper
+    AssignmentEngine -> AssignmentEngine: Selecciona 3 revisores\n(evita conflictos)
+    AssignmentEngine -> ReviewService: createAssignment()
+end
+AssignmentEngine --> ReviewService: Asignaciones completadas
+
+deactivate AssignmentEngine
+
+ReviewService -> NotificationService: notifyReviewersAssigned(assignments)
+
+activate NotificationService
+NotificationService -> EmailQueue: Queue email notifications
+
+activate EmailQueue
+loop Para cada revisor
+    EmailQueue -> EmailQueue: Crea mensaje de email
+end
+EmailQueue --> NotificationService: Emails en queue
+
+deactivate EmailQueue
+
+NotificationService --> ReviewService: Notificaciones queued
+
+deactivate NotificationService
+
+ReviewService --> Backend: ✓ Distribución completada
+
+deactivate ReviewService
+
+Backend -> Backend: Log: Distribution completed\nGenerate event
+
+Backend --> Admin: "✓ Papers distribuidos\na 3 revisores cada uno"
+
+deactivate Backend
+
+@enduml
+
+
+'=== DIAGRAMA 8: SECUENCIA - SELECCIÓN FINAL ===
+@startuml Sequence_Selection
+title Secuencia: Selección Final de Papers
+
+actor Admin
+participant Backend
+participant SelectionService
+participant ReviewService
+participant DecisionRepository
+participant NotificationService
+
+Admin -> Backend: Ejecutar "Seleccionar Papers"
+
+activate Backend
+Backend -> SelectionService: selectPapers(criteria)
+
+activate SelectionService
+
+loop Para cada paper evaluado
+    SelectionService -> ReviewService: getReviewStatistics(paperId)
+    activate ReviewService
+    ReviewService --> SelectionService: {avgScore, recommendations}
+    deactivate ReviewService
+    
+    SelectionService -> SelectionService: Aplica criterios\nde selección
+    
+    alt avgScore >= threshold && aceptaciones >= 2
+        SelectionService -> SelectionService: decision = ACCEPTED
+    else avgScore >= threshold/2 && recomendaciones mixtas
+        SelectionService -> SelectionService: decision = CHANGES_REQUIRED
+    else
+        SelectionService -> SelectionService: decision = REJECTED
+    end
+    
+    SelectionService -> DecisionRepository: save(decision)
+end
+
+SelectionService --> Backend: Selección completada
+
+deactivate SelectionService
+
+Backend -> NotificationService: notifyAuthorsOfDecisions()
+
+activate NotificationService
+NotificationService -> NotificationService: Genera notifications\npor paper
+NotificationService --> Backend: Notifications queued
+deactivate NotificationService
+
+Backend --> Admin: "✓ Selección completada\nNotificaciones enviadas"
+
+deactivate Backend
+
+@enduml

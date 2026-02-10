@@ -1,0 +1,46 @@
+sequenceDiagram
+    participant Admin
+    participant Backend
+    participant Service
+    participant Engine
+    participant Notif
+    participant Queue
+    
+    Admin->>Backend: Click "Distribuir Papers"
+    activate Backend
+    
+    Backend->>Service: distributePapers()
+    activate Service
+    
+    Service->>Engine: assignReviewers(papers, 3)
+    activate Engine
+    
+    loop Para cada paper
+        Engine->>Engine: Selecciona 3 revisores<br/>(evita conflictos)
+        Engine->>Service: createAssignment()
+    end
+    
+    Engine-->>Service: ✓ Asignaciones listas
+    deactivate Engine
+    
+    Service->>Notif: notifyReviewersAssigned()
+    activate Notif
+    
+    Notif->>Queue: Queue email notifications
+    activate Queue
+    
+    loop Para cada revisor
+        Queue->>Queue: Crea mensaje email
+    end
+    
+    Queue-->>Notif: Emails en queue
+    deactivate Queue
+    
+    Notif-->>Service: ✓ Notificaciones queued
+    deactivate Notif
+    
+    Service-->>Backend: ✓ Distribución completa
+    deactivate Service
+    
+    Backend->>Admin: ✓ Papers distribuidos<br/>a 3 revisores c/u
+    deactivate Backend

@@ -1,0 +1,39 @@
+stateDiagram-v2
+    [*] --> DRAFT: Autor crea
+    
+    DRAFT --> SUBMITTED: Autor envía
+    
+    SUBMITTED --> REGISTERED: Admin registra<br/>y valida
+    
+    REGISTERED --> UNDER_REVIEW: Admin distribuye<br/>a 3 revisores
+    
+    UNDER_REVIEW --> EVALUATED: Revisores completan<br/>evaluaciones
+    
+    EVALUATED --> DECISION_MADE: Comité decide
+    
+    DECISION_MADE --> ACCEPTED: Aceptado<br/>(sin cambios)
+    
+    DECISION_MADE --> CHANGES_REQUIRED: Requiere<br/>cambios
+    
+    DECISION_MADE --> REJECTED: Rechazado
+    
+    CHANGES_REQUIRED --> FINAL_REVISION: Autor revisa<br/>y reenvía
+    
+    FINAL_REVISION --> IN_PROGRAM: Versión final<br/>aceptada
+    
+    ACCEPTED --> IN_PROGRAM: Listo para<br/>programa
+    
+    IN_PROGRAM --> [*]: En presentación
+    
+    REJECTED --> [*]: Finalizado
+    
+    note right of UNDER_REVIEW
+        3 revisores por paper
+        Plazo: 2-4 semanas
+    end note
+    
+    note right of DECISION_MADE
+        Criterios:
+        - Score >= 7.0
+        - Aceptaciones >= 2
+    end note

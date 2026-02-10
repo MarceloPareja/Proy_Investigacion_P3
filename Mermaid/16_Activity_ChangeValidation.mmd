@@ -1,0 +1,50 @@
+flowchart TD
+    A["🎯 Evento: Cambios<br/>en paper<br/>requieren validación"] --> B["🔍 Obtener información<br/>actual del paper"]
+    B --> C["📝 Cambios propuestos<br/>en nuevos archivos"]
+    
+    C --> D{" ¿Tipo de<br/>cambio?"}
+    
+    D -->|Cambio de título| E["✅ Validar longitud<br/>título: 5-200 chars"]
+    D -->|Cambio de abstract| F["✅ Validar longitud<br/>abstract: 50-500 words"]
+    D -->|Cambio archivo| G["✅ Validar PDF:<br/>- Tamaño < 10MB<br/>- Contiene texto<br/>- Formato válido"]
+    D -->|Cambio autores| H["✅ Validar autores:<br/>- Emails válidos<br/>- Nombres completos<br/>- Instituciones"]
+    
+    E --> I["🧮 Calcular diff<br/>cambios realizados"]
+    F --> I
+    G --> I
+    H --> I
+    
+    I --> J{" ¿Cambios<br/>significativos?<br/>(> 30% contenido)"}
+    
+    J -->|Sí| K["⚠️ Bandera:<br/>Revalidar contenido"]
+    J -->|No| L["✅ Cambios menores,<br/>no requiere revalidación"]
+    
+    K --> M["📋 Encolar para<br/>revisión manual<br/>por comité"]
+    L --> N["💾 Guardar cambios<br/>en BD"]
+    M --> N
+    
+    N --> O["📊 Crear versión<br/>anterior en historial"]
+    O --> P["✅ Actualizar<br/>estatus de paper<br/>a CAMBIOS_APLICADOS"]
+    P --> Q["📤 Encolar notificación"]
+    Q --> R["📧 Email a revisores<br/>informando cambios"]
+    R --> S["✅ Validación completada"]
+    
+    style A fill:#fff9c4
+    style B fill:#b2dfdb
+    style C fill:#b2dfdb
+    style D fill:#c8e6c9
+    style E fill:#e1bee7
+    style F fill:#e1bee7
+    style G fill:#e1bee7
+    style H fill:#e1bee7
+    style I fill:#b2dfdb
+    style J fill:#c8e6c9
+    style K fill:#ffccbc
+    style L fill:#c8e6c9
+    style M fill:#ffccbc
+    style N fill:#b2dfdb
+    style O fill:#b2dfdb
+    style P fill:#c8e6c9
+    style Q fill:#81d4fa
+    style R fill:#81d4fa
+    style S fill:#c8e6c9

@@ -1,0 +1,54 @@
+flowchart TD
+    A["📊 Evento de sistema<br/>ocurre<br/>(create, update, delete, etc.)"] --> B["⏲️ Capturar timestamp"]
+    B --> C["👤 Capturar usuario<br/>que realizó acción"]
+    C --> D["📍 Capturar IP address<br/>y user agent"]
+    
+    D --> E["🔍 Obtener detalles<br/>de entidad modificada"]
+    E --> F{" ¿Qué tipo de<br/>evento?"}
+    
+    F -->|CREATE| G["✏️ Registrar:<br/>- Usuario creador<br/>- Datos iniciales<br/>- Timestamp"]
+    F -->|UPDATE| H["✏️ Registrar:<br/>- Usuario que editó<br/>- Datos anteriores<br/>- Datos nuevos<br/>- Campo modificado"]
+    F -->|DELETE| I["✏️ Registrar:<br/>- Usuario que eliminó<br/>- Datos eliminados<br/>- Razón (si aplica)"]
+    F -->|DOWNLOAD| J["✏️ Registrar:<br/>- Usuario<br/>- Archivo descargado<br/>- Cantidad descargas"]
+    
+    G --> K["🔐 Calcular hash<br/>de datos para<br/>integridad"]
+    H --> K
+    I --> K
+    J --> K
+    
+    K --> L["💾 Guardar registro<br/>en tabla AUDIT_LOG"]
+    L --> M["⏰ Indexar por timestamp<br/>y usuario"]
+    M --> N{" ¿Evento crítico?<br/>(delete, acceso<br/>cambios críticos)"}
+    
+    N -->|Sí| O["🚨 Enviar alerta<br/>a administrador"]
+    N -->|No| P["✅ Log completado"]
+    
+    O --> Q["📧 Email notificación<br/>acción crítica detectada"]
+    Q --> P
+    
+    P --> R["📋 Consultas de audit:<br/>- Listar por usuario<br/>- Listar por entidad<br/>- Listar por fecha<br/>- Buscar cambios específicos"]
+    
+    R --> S["📊 Reporte de audit:<br/>- Exportar CSV<br/>- Exportar PDF<br/>- Visualizar timeline"]
+    
+    S --> T["✅ Audit completado"]
+    
+    style A fill:#fff9c4
+    style B fill:#b2dfdb
+    style C fill:#b2dfdb
+    style D fill:#b2dfdb
+    style E fill:#b2dfdb
+    style F fill:#c8e6c9
+    style G fill:#e1bee7
+    style H fill:#e1bee7
+    style I fill:#ffcdd2
+    style J fill:#b2dfdb
+    style K fill:#b2dfdb
+    style L fill:#81d4fa
+    style M fill:#81d4fa
+    style N fill:#c8e6c9
+    style O fill:#ffccbc
+    style P fill:#c8e6c9
+    style Q fill:#81d4fa
+    style R fill:#b2dfdb
+    style S fill:#b2dfdb
+    style T fill:#c8e6c9

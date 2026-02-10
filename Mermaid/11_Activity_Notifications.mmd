@@ -1,0 +1,63 @@
+flowchart TD
+    A["🔔 Evento desencadena<br/>notificación<br/>(paper enviado, revisión recibida, etc.)"] --> B["📤 Cola de eventos<br/>asincronos"]
+    B --> C["⚙️ Worker Celery<br/>procesa evento"]
+    C --> D{" ¿Tipo de<br/>evento?"}
+    
+    D -->|Paper Enviado| E["📧 Obtener email<br/>del Administrador"]
+    D -->|Revisión Completada| F["📧 Obtener emails<br/>de otros revisores"]
+    D -->|Decisión Tomada| G["📧 Obtener email<br/>del Autor"]
+    D -->|Recordatorio| H["⏰ Email de<br/>recordatorio"]
+    
+    E --> I["📝 Renderizar<br/>template email<br/>con contexto"]
+    F --> I
+    G --> I
+    H --> I
+    
+    I --> J["🔐 Validar<br/>dirección email"]
+    J --> K{" ¿Email<br/>válido?"}
+    
+    K -->|No| L["❌ Logging error<br/>email inválido"]
+    K -->|Sí| M["🔍 Verificar<br/>preferencias usuario"]
+    
+    M --> N{" ¿Usuario<br/>desuscrito?"}
+    N -->|Sí| O["⏭️ Saltar envío"]
+    N -->|No| P["📶 Conectar<br/>a SMTP server"]
+    
+    P --> Q["✉️ Enviar email<br/>vía SMTP"]
+    Q --> R{" ¿Envío<br/>exitoso?"}
+    
+    R -->|Sí| S["✅ Logging: éxito"]
+    R -->|No| T["🔄 Reintentar<br/>en 5 minutos<br/>(máx 3 intentos)"]
+    
+    T --> U{" ¿Reintentos<br/>agotados?"}
+    U -->|Sí| L
+    U -->|No| P
+    
+    S --> V["📊 Actualizar<br/>estadísticas"]
+    L --> V
+    O --> V
+    
+    V --> W["🏁 Notificación<br/>completada"]
+    
+    style A fill:#fff9c4
+    style B fill:#fff9c4
+    style C fill:#fff9c4
+    style D fill:#c8e6c9
+    style E fill:#e1bee7
+    style F fill:#e1bee7
+    style G fill:#e1bee7
+    style H fill:#e1bee7
+    style I fill:#b2dfdb
+    style J fill:#b2dfdb
+    style K fill:#c8e6c9
+    style M fill:#b2dfdb
+    style N fill:#c8e6c9
+    style P fill:#81d4fa
+    style Q fill:#81d4fa
+    style R fill:#c8e6c9
+    style S fill:#c8e6c9
+    style T fill:#ffccbc
+    style U fill:#c8e6c9
+    style L fill:#ffcdd2
+    style O fill:#ffccbc
+    style V fill:#b2dfdb

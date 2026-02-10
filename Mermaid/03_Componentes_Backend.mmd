@@ -1,0 +1,44 @@
+graph TB
+    subgraph APILayer["API Layer - Controllers"]
+        AuthCtrl["AuthController<br/>POST /login<br/>POST /register"]
+        PaperCtrl["PaperController<br/>POST /papers<br/>GET /papers/{id}"]
+        ReviewCtrl["ReviewController<br/>GET /reviews<br/>POST /reviews/{id}"]
+        AdminCtrl["AdminController<br/>POST /distribute<br/>POST /select"]
+    end
+    
+    subgraph BusinessLayer["Business Logic - Services"]
+        PaperServ["PaperService<br/>submitPaper()<br/>validatePaper()"]
+        ReviewServ["ReviewService<br/>createReview()<br/>submitReview()"]
+        SelectServ["SelectionService<br/>selectPapers()<br/>calculateScore()"]
+        NotifServ["NotificationService<br/>sendEmail()<br/>queueNotif()"]
+    end
+    
+    subgraph DataLayer["Data Layer - Repositories"]
+        PaperRepo["PaperRepository<br/>findById()<br/>save()"]
+        ReviewRepo["ReviewRepository<br/>findByPaper()<br/>save()"]
+        UserRepo["UserRepository<br/>findById()<br/>save()"]
+    end
+    
+    subgraph Persistence["Persistence"]
+        PostgreSQL["PostgreSQL Database"]
+    end
+    
+    AuthCtrl --> PaperServ
+    PaperCtrl --> PaperServ
+    ReviewCtrl --> ReviewServ
+    AdminCtrl --> SelectServ
+    
+    PaperServ --> PaperRepo
+    ReviewServ --> ReviewRepo
+    SelectServ --> PaperRepo
+    SelectServ --> ReviewRepo
+    NotifServ --> UserRepo
+    
+    PaperRepo --> PostgreSQL
+    ReviewRepo --> PostgreSQL
+    UserRepo --> PostgreSQL
+    
+    style APILayer fill:#81d4fa
+    style BusinessLayer fill:#4dd0e1
+    style DataLayer fill:#26c6da
+    style Persistence fill:#b2dfdb

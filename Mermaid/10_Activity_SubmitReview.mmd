@@ -1,0 +1,51 @@
+flowchart TD
+    A["📝 Revisor accede<br/>al portal"] --> B["📋 Ve asignaciones<br/>del revisor"]
+    B --> C["🔍 Selecciona paper<br/>a revisar"]
+    C --> D{" ¿Paper<br/>disponible?"}
+    
+    D -->|No| T["⚠️ Mostrar error<br/>Paper ya revisado"]
+    T --> U["🔙 Volver a lista"]
+    
+    D -->|Sí| E["📄 Lee abstract<br/>e introducción"]
+    E --> F["🧠 Revisa metodología<br/>y resultados"]
+    F --> G["💭 Evalúa contribución<br/>científica"]
+    G --> H{"¿Paper<br/>cumple<br/>criterios?"}
+    
+    H -->|No| I["⭐ Califica: 1-3<br/>(Rechazar)"]
+    H -->|Sí| J{"¿Cambios<br/>menores?"}
+    
+    J -->|Sí| K["⭐ Califica: 5-6<br/>(Cambios)"]
+    J -->|No| L["⭐ Califica: 7-10<br/>(Aceptar)"]
+    
+    I --> M["💬 Escribe comentarios<br/>detallados"]
+    K --> M
+    L --> M
+    
+    M --> N["✍️ Redacta puntos<br/>fuertes y débiles"]
+    N --> O["⬆️ Envía revisión<br/>a sistema"]
+    O --> P["✅ Sistema confirma<br/>recepción"]
+    P --> Q["📧 Email notifica<br/>a admin"]
+    Q --> R{"¿Más papers<br/>asignados?"}
+    
+    R -->|Sí| U
+    R -->|No| V["🏁 Fin"]
+    U --> C
+    
+    style A fill:#fff9c4
+    style B fill:#fff9c4
+    style C fill:#fff9c4
+    style E fill:#e1bee7
+    style F fill:#e1bee7
+    style G fill:#e1bee7
+    style H fill:#c8e6c9
+    style I fill:#ffccbc
+    style J fill:#c8e6c9
+    style K fill:#c8e6c9
+    style L fill:#c8e6c9
+    style M fill:#e1bee7
+    style N fill:#e1bee7
+    style O fill:#b2dfdb
+    style P fill:#81d4fa
+    style Q fill:#81d4fa
+    style T fill:#ffcdd2
+    style R fill:#c8e6c9

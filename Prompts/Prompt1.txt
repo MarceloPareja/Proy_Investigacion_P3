@@ -1,4 +1,5 @@
-Puedes crear una arquitectura, sin código, para este ejercicio por favor:
+Puedes crear una arquitectura, de software, especialmente diagramas de arquitectura y componentes para el siguiente programa o sistema. No generes código, 
+pero puedes darme una idea de qué lenguaje puede trabajar mejor con este escenario, y que patrones arquitectónicos a implementar. Genera los diagramas en archivos markdown con mermaid
 "Las conferencias de profesionales son organizadas a fin de anunciar y discutir resultados en
 un campo científico dado. La actividad central de organizar una conferencia se centra en
 seleccionar los trabajos (de ahora en más llamados papers) a ser presentados.

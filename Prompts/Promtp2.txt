@@ -1,0 +1,16 @@
+Puedes crear una arquitectura, de software, especialmente diagramas de arquitectura y componentes para el siguiente programa o sistema. No generes código, 
+pero puedes darme una idea de qué lenguaje puede trabajar mejor con este escenario, y que patrones arquitectónicos a implementar. Genera los diagramas en archivos markdown con mermaid
+Una empresa multinacional de desarrollo de software desea desarrollar un servicio de
+calendario que pueda ser accedido por usuarios desde diferentes plataformas y dispositivos.
+El calendario estará disponible en una página web a la cual los usuarios podrán ingresar
+identificándose con una clave de usuario y una contraseña. Esta no será la única forma de
+interactuar con los calendarios, dado que también se podrán instalar distintas aplicaciones
+en diferentes dispositivos (celulares, tablets, PCs, etc.) capaces de generar diferentes
+visualizaciones de los calendarios
+Debido a que se almacenan calendarios de diferentes usuarios que pueden contener
+información sensible, éstos se guardan de forma encriptada. Es por esta razón que cuando
+un usuario desea acceder a un calendario debe primero identificarse ante el sistema y luego,
+si el usuario tiene los permisos necesarios para operar sobre el mismo, se desencripta el
+calendario y se realizan las operaciones necesarias para preparar la vista del
+usuario.Además, un usuario podrá configurar alertas en su calendario para que le provea
+notificaciones de determinados eventos que se reflejarán en las diferentes aplicaciones. 

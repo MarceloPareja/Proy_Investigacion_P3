@@ -1,0 +1,43 @@
+flowchart TD
+    A["🎯 Administrador anuncia<br/>Call for Papers"] --> B["📝 Autores envían papers<br/>(período abierto)"]
+    B --> C["✅ Administrador registra<br/>y valida papers"]
+    C --> D["📅 En fecha X, Admin distribuye<br/>papers a revisores<br/>(3 por paper)"]
+    D --> E["🔍 Revisores evalúan papers<br/>(período de 2-4 semanas)"]
+    E --> F["📊 Admin recopila<br/>evaluaciones de 3 revisores"]
+    F --> G{"🤔 Comité toma<br/>decisiones"}
+    
+    G -->|Aceptado| H{"¿Requiere<br/>cambios?"}
+    G -->|Rechazado| N["❌ Notificar rechazo<br/>a autor"]
+    
+    H -->|Sí| I["📝 Notificar cambios<br/>requeridos"]
+    H -->|No| J["✅ Notificar aceptación"]
+    
+    I --> K["✏️ Autor envía<br/>versión revisada"]
+    K --> L["📥 Admin recibe<br/>versión final"]
+    
+    J --> M["📋 Papers aceptados<br/>en programa final"]
+    L --> M
+    
+    M --> O["⚙️ Admin construye<br/>programa final<br/>(sesiones, horarios)"]
+    O --> P["🌐 Publicar programa"]
+    P --> Q["🎤 Conferencia comienza"]
+    N --> R["🏁 Fin"]
+    Q --> R
+    
+    style A fill:#fff9c4
+    style B fill:#fff9c4
+    style C fill:#fff9c4
+    style D fill:#ffccbc
+    style E fill:#ffccbc
+    style F fill:#ffccbc
+    style G fill:#c8e6c9
+    style H fill:#c8e6c9
+    style I fill:#ffccbc
+    style J fill:#c8e6c9
+    style K fill:#fff9c4
+    style L fill:#fff9c4
+    style M fill:#b2dfdb
+    style N fill:#ffcdd2
+    style O fill:#b2dfdb
+    style P fill:#81d4fa
+    style Q fill:#81d4fa
